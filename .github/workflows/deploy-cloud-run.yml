@@ -43,6 +43,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate required GitHub variables
+        env:
+          REQUIRED_GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          REQUIRED_GCP_REGION: ${{ vars.GCP_REGION }}
+          REQUIRED_ARTIFACT_REGISTRY_REPOSITORY: ${{ vars.ARTIFACT_REGISTRY_REPOSITORY }}
+          REQUIRED_CLOUD_RUN_SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
+          REQUIRED_GCP_SERVICE_ACCOUNT_EMAIL: ${{ vars.GCP_SERVICE_ACCOUNT_EMAIL }}
+          REQUIRED_GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          REQUIRED_GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+          REQUIRED_VOICEVOX_API_BASE_URL: ${{ vars.VOICEVOX_API_BASE_URL }}
+        run: |
+          missing=0
+          [ -n "${REQUIRED_GCP_PROJECT_ID}" ] || { echo "::error title=Missing GitHub Variable::GCP_PROJECT_ID is not set"; missing=1; }
+          [ -n "${REQUIRED_GCP_REGION}" ] || { echo "::error title=Missing GitHub Variable::GCP_REGION is not set"; missing=1; }
+          [ -n "${REQUIRED_ARTIFACT_REGISTRY_REPOSITORY}" ] || { echo "::error title=Missing GitHub Variable::ARTIFACT_REGISTRY_REPOSITORY is not set"; missing=1; }
+          [ -n "${REQUIRED_CLOUD_RUN_SERVICE}" ] || { echo "::error title=Missing GitHub Variable::CLOUD_RUN_SERVICE is not set"; missing=1; }
+          [ -n "${REQUIRED_GCP_SERVICE_ACCOUNT_EMAIL}" ] || { echo "::error title=Missing GitHub Variable::GCP_SERVICE_ACCOUNT_EMAIL is not set"; missing=1; }
+          [ -n "${REQUIRED_GCP_WORKLOAD_IDENTITY_PROVIDER}" ] || { echo "::error title=Missing GitHub Variable::GCP_WORKLOAD_IDENTITY_PROVIDER is not set"; missing=1; }
+          [ -n "${REQUIRED_GCS_BUCKET}" ] || { echo "::error title=Missing GitHub Variable::GCS_BUCKET is not set"; missing=1; }
+          [ -n "${REQUIRED_VOICEVOX_API_BASE_URL}" ] || { echo "::error title=Missing GitHub Variable::VOICEVOX_API_BASE_URL is not set"; missing=1; }
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
       - id: auth
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v3
