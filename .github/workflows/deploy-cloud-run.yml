@@ -1,0 +1,60 @@
+name: Deploy Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-cloud-run-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_REGION: ${{ vars.GCP_REGION }}
+      ARTIFACT_REGISTRY_REPOSITORY: ${{ vars.ARTIFACT_REGISTRY_REPOSITORY }}
+      SERVICE_NAME: ${{ vars.CLOUD_RUN_SERVICE }}
+      SERVICE_ACCOUNT_EMAIL: ${{ vars.GCP_SERVICE_ACCOUNT_EMAIL }}
+      GCS_BUCKET: ${{ vars.GCS_BUCKET }}
+      VOICEVOX_API_BASE_URL: ${{ vars.VOICEVOX_API_BASE_URL }}
+      CLOUD_SQL_CONNECTION_NAME: ${{ vars.CLOUD_SQL_CONNECTION_NAME }}
+      APP_NAME: ${{ vars.APP_NAME }}
+      JWT_ISSUER: ${{ vars.JWT_ISSUER }}
+      JWT_AUDIENCE: ${{ vars.JWT_AUDIENCE }}
+      MIN_INSTANCES: ${{ vars.MIN_INSTANCES }}
+      MAX_INSTANCES: ${{ vars.MAX_INSTANCES }}
+      ALLOW_UNAUTHENTICATED: ${{ vars.ALLOW_UNAUTHENTICATED }}
+      DATABASE_URL_SECRET_NAME: ${{ vars.DATABASE_URL_SECRET_NAME }}
+      JWT_SECRET_NAME: ${{ vars.JWT_SECRET_NAME }}
+      IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: ">= 363.0.0"
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Deploy to Cloud Run
+        run: bash scripts/deploy-cloud-run.sh

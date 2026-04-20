@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    ".dockerignore": "ignore",
+    ".gcloudignore": "ignore",
+    ".gitignore": "ignore"
+  }
+}
