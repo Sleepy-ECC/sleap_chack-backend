@@ -1,11 +1,91 @@
 {
-  "id": "11267cdd-8839-4af2-a2f0-1127780b6f7d",
+  "id": "836f8d41-230d-4d8c-abe5-0a8c5db7589a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.refresh_sessions": {
-      "name": "refresh_sessions",
+    "public.sleep_methods": {
+      "name": "sleep_methods",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "has_audio": {
+          "name": "has_audio",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "sleep_methods_code_unique": {
+          "name": "sleep_methods_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sleep_records": {
+      "name": "sleep_records",
       "schema": "",
       "columns": {
         "id": {
@@ -21,21 +101,27 @@
           "primaryKey": false,
           "notNull": true
         },
-        "token_hash": {
-          "name": "token_hash",
-          "type": "text",
+        "sleep_method_id": {
+          "name": "sleep_method_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp with time zone",
+        "sleep_date": {
+          "name": "sleep_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slept_minutes": {
+          "name": "slept_minutes",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -43,9 +129,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "refresh_sessions_user_id_users_id_fk": {
-          "name": "refresh_sessions_user_id_users_id_fk",
-          "tableFrom": "refresh_sessions",
+        "sleep_records_user_id_users_id_fk": {
+          "name": "sleep_records_user_id_users_id_fk",
+          "tableFrom": "sleep_records",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -54,6 +140,19 @@
             "id"
           ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sleep_records_sleep_method_id_sleep_methods_id_fk": {
+          "name": "sleep_records_sleep_method_id_sleep_methods_id_fk",
+          "tableFrom": "sleep_records",
+          "tableTo": "sleep_methods",
+          "columnsFrom": [
+            "sleep_method_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -76,33 +175,32 @@
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
         "password_hash": {
           "name": "password_hash",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
+        "display_name": {
+          "name": "display_name",
+          "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": true,
-          "default": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamp with time zone",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
