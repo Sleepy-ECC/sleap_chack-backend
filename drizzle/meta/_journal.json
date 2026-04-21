@@ -5,8 +5,22 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1776501370045,
-      "tag": "0000_marvelous_devos",
+      "when": 1776785917765,
+      "tag": "0000_create_users",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776785917766,
+      "tag": "0001_create_sleep_methods",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776785917767,
+      "tag": "0002_create_sleep_records",
       "breakpoints": true
     }
   ]
