@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+trim() {
+  printf '%s' "$1" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+}
+
 required_vars=(
   GCP_PROJECT_ID
   GCP_REGION
@@ -19,8 +23,19 @@ for var_name in "${required_vars[@]}"; do
   fi
 done
 
+GCP_PROJECT_ID="$(trim "${GCP_PROJECT_ID}")"
+GCP_REGION="$(trim "${GCP_REGION}")"
+ARTIFACT_REGISTRY_REPOSITORY="$(trim "${ARTIFACT_REGISTRY_REPOSITORY}")"
+SERVICE_NAME="$(trim "${SERVICE_NAME}")"
+SERVICE_ACCOUNT_EMAIL="$(trim "${SERVICE_ACCOUNT_EMAIL}")"
+GCS_BUCKET="$(trim "${GCS_BUCKET}")"
+VOICEVOX_API_BASE_URL="$(trim "${VOICEVOX_API_BASE_URL}")"
+CLOUD_SQL_CONNECTION_NAME="$(trim "${CLOUD_SQL_CONNECTION_NAME:-}")"
+
 IMAGE_NAME="${IMAGE_NAME:-sleap-check-backend}"
 IMAGE_TAG="${IMAGE_TAG:-$(date +%Y%m%d-%H%M%S)}"
+IMAGE_NAME="$(trim "${IMAGE_NAME}")"
+IMAGE_TAG="$(trim "${IMAGE_TAG}")"
 IMAGE_URI="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
 DATABASE_URL_SECRET_NAME="${DATABASE_URL_SECRET_NAME:-DATABASE_URL}"
@@ -31,11 +46,26 @@ APP_NAME="${APP_NAME:-sleap-check-backend}"
 MIN_INSTANCES="${MIN_INSTANCES:-0}"
 MAX_INSTANCES="${MAX_INSTANCES:-10}"
 ALLOW_UNAUTHENTICATED="${ALLOW_UNAUTHENTICATED:-true}"
+CLOUD_BUILD_SOURCE_STAGING_DIR="${CLOUD_BUILD_SOURCE_STAGING_DIR:-gs://${GCS_BUCKET}/cloudbuild/source}"
+CLOUD_BUILD_LOG_DIR="${CLOUD_BUILD_LOG_DIR:-gs://${GCS_BUCKET}/cloudbuild/logs}"
+
+DATABASE_URL_SECRET_NAME="$(trim "${DATABASE_URL_SECRET_NAME}")"
+JWT_SECRET_NAME="$(trim "${JWT_SECRET_NAME}")"
+JWT_ISSUER="$(trim "${JWT_ISSUER}")"
+JWT_AUDIENCE="$(trim "${JWT_AUDIENCE}")"
+APP_NAME="$(trim "${APP_NAME}")"
+MIN_INSTANCES="$(trim "${MIN_INSTANCES}")"
+MAX_INSTANCES="$(trim "${MAX_INSTANCES}")"
+ALLOW_UNAUTHENTICATED="$(trim "${ALLOW_UNAUTHENTICATED}")"
+CLOUD_BUILD_SOURCE_STAGING_DIR="$(trim "${CLOUD_BUILD_SOURCE_STAGING_DIR}")"
+CLOUD_BUILD_LOG_DIR="$(trim "${CLOUD_BUILD_LOG_DIR}")"
 
 echo "Building image: ${IMAGE_URI}"
 gcloud builds submit \
   --project "${GCP_PROJECT_ID}" \
   --config cloudbuild.yaml \
+  --gcs-source-staging-dir "${CLOUD_BUILD_SOURCE_STAGING_DIR}" \
+  --gcs-log-dir "${CLOUD_BUILD_LOG_DIR}" \
   --substitutions "_IMAGE_URI=${IMAGE_URI}" \
   .
 
