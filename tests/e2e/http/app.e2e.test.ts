@@ -1,0 +1,157 @@
+import { describe, expect, it, vi } from "vitest";
+
+import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-case-error.js";
+import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
+import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
+import { Email } from "../../../src/domain/auth/email.js";
+
+const registerUserUseCase: RegisterUserUseCase = {
+  execute: vi.fn(async (input) => ({
+    user: {
+      id: "user-1",
+      email: Email.create(input.email),
+      passwordHash: "hashed-password",
+      displayName: input.displayName?.trim() ?? null,
+      createdAt: new Date("2026-04-22T00:00:00.000Z"),
+    },
+    accessToken: "access-token",
+  })),
+};
+
+const loginUserUseCase: LoginUserUseCase = {
+  execute: vi.fn(async (input) => {
+    if (input.password !== "password123") {
+      throw new AuthUseCaseError("INVALID_CREDENTIALS");
+    }
+
+    return {
+      user: {
+        id: "user-1",
+        email: Email.create(input.email),
+        passwordHash: "hashed-password",
+        displayName: "Hitsujii",
+        createdAt: new Date("2026-04-22T00:00:00.000Z"),
+      },
+      accessToken: "access-token",
+    };
+  }),
+};
+
+describe("app e2e", () => {
+  it("healthz に応答する", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authModule: {
+        registerUserUseCase,
+        loginUserUseCase,
+      },
+    });
+
+    const response = await app.request("/healthz");
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      ok: true,
+      service: "hitsujii-sleep-school-backend",
+      env: "test",
+    });
+  });
+
+  it("組み立て済み app を通して register と login を処理する", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authModule: {
+        registerUserUseCase,
+        loginUserUseCase,
+      },
+    });
+
+    const registerResponse = await app.request("/auth/register", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "test@example.com",
+        password: "password123",
+        displayName: "Hitsujii",
+      }),
+    });
+
+    expect(registerResponse.status).toBe(201);
+
+    const loginResponse = await app.request("/auth/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "test@example.com",
+        password: "password123",
+      }),
+    });
+
+    expect(loginResponse.status).toBe(200);
+    await expect(loginResponse.json()).resolves.toMatchObject({
+      ok: true,
+      accessToken: "access-token",
+      user: {
+        email: "test@example.com",
+      },
+    });
+  });
+
+  it("login 失敗時は INVALID_CREDENTIALS を返す", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authModule: {
+        registerUserUseCase,
+        loginUserUseCase,
+      },
+    });
+
+    const response = await app.request("/auth/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "test@example.com",
+        password: "wrong-password",
+      }),
+    });
+
+    expect(response.status).toBe(401);
+    await expect(response.json()).resolves.toEqual({
+      ok: false,
+      error: "INVALID_CREDENTIALS",
+    });
+  });
+
+  it("register の入力が不正な場合は INVALID_REQUEST を返す", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authModule: {
+        registerUserUseCase,
+        loginUserUseCase,
+      },
+    });
+
+    const response = await app.request("/auth/register", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "bad-email",
+        password: "short",
+      }),
+    });
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      ok: false,
+      error: "INVALID_REQUEST",
+    });
+  });
+});
