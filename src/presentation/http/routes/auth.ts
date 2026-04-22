@@ -6,12 +6,8 @@ import type { RegisterUserUseCase } from "../../../application/auth/usecases/reg
 import { toAuthErrorResponse } from "../presenters/auth-error-presenter.js";
 import { toAuthSuccessResponse } from "../presenters/auth-success-presenter.js";
 import { toValidationErrorResponse } from "../presenters/validation-error-presenter.js";
+import { parseJson } from "../requests/parse-json.js";
 import { loginSchema, registerSchema } from "../schemas/auth-schema.js";
-
-const parseJson = async <T>(request: Request, schema: z.ZodType<T>) => {
-  const body = await request.json().catch(() => null);
-  return schema.safeParse(body);
-};
 
 export const createAuthRouter = (deps: {
   registerUserUseCase: RegisterUserUseCase;

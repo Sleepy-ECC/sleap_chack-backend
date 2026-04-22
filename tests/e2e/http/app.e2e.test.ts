@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-case-error.js";
 import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
 import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
+import type { GetVoicevoxSpeakersUseCase } from "../../../src/application/voicevox/usecases/get-speakers.js";
+import type { SynthesizeVoiceUseCase } from "../../../src/application/voicevox/usecases/synthesize-voice.js";
 import { Email } from "../../../src/domain/auth/email.js";
 
 const registerUserUseCase: RegisterUserUseCase = {
@@ -37,6 +39,19 @@ const loginUserUseCase: LoginUserUseCase = {
   }),
 };
 
+const getVoicevoxSpeakersUseCase: GetVoicevoxSpeakersUseCase = {
+  execute: vi.fn(async () => ({
+    speakers: [],
+  })),
+};
+
+const synthesizeVoiceUseCase: SynthesizeVoiceUseCase = {
+  execute: vi.fn(async () => ({
+    audio: new Uint8Array([1, 2, 3]).buffer,
+    contentType: "audio/wav",
+  })),
+};
+
 describe("app e2e", () => {
   it("healthz に応答する", async () => {
     const { createApp } = await import("../../../src/app.js");
@@ -44,6 +59,10 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      voicevoxModule: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
       },
     });
 
@@ -63,6 +82,10 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      voicevoxModule: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
       },
     });
 
@@ -108,6 +131,10 @@ describe("app e2e", () => {
         registerUserUseCase,
         loginUserUseCase,
       },
+      voicevoxModule: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
+      },
     });
 
     const response = await app.request("/auth/login", {
@@ -134,6 +161,10 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      voicevoxModule: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
       },
     });
 
