@@ -4,7 +4,12 @@ import { serve } from "@hono/node-server";
 config();
 
 const main = async () => {
-  const [{ app }, { env }] = await Promise.all([import("./app.js"), import("./config/env.js")]);
+  const [{ bootstrapApp }, { env }] = await Promise.all([
+    import("./bootstrap/create-app.js"),
+    import("./config/env.js"),
+  ]);
+
+  const app = bootstrapApp();
 
   serve(
     {
