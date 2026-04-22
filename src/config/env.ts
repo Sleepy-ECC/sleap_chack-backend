@@ -3,7 +3,7 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(8080),
-  APP_NAME: z.string().min(1).default("sleap-check-backend"),
+  APP_NAME: z.string().min(1).default("hitsujii-sleep-school-backend"),
   DATABASE_URL: z.url(),
   DATABASE_SSL: z
     .string()

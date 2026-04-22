@@ -1,4 +1,4 @@
-# sleap_chack-backend
+# hitsujii-sleep-school-backend
 
 `Hono + Zod + Drizzle` を使った backend API です。
 

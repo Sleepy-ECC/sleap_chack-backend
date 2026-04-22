@@ -1,7 +1,7 @@
 {
   "name": "sleap_chack-backend",
   "version": "1.0.0",
-  "description": "Backend API for Sleap Check",
+  "description": "Backend API for Hitsujii Sleep School",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
@@ -9,7 +9,7 @@
     "check": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "docker:build": "docker build -t sleap-check-backend:local .",
+    "docker:build": "docker build -t hitsujii-sleep-school-backend:local .",
     "deploy:cloudrun": "bash scripts/deploy-cloud-run.sh"
   },
   "repository": {
