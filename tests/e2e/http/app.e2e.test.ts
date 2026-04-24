@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-case-error.js";
 import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
 import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
+import type { CreateSleepRecordUseCase } from "../../../src/application/sleep-records/usecases/create-sleep-record.js";
 import type { ListSleepMethodsUseCase } from "../../../src/application/sleep-methods/usecases/list-sleep-methods.js";
 import type { GetVoicevoxSpeakersUseCase } from "../../../src/application/voicevox/usecases/get-speakers.js";
 import type { SynthesizeVoiceUseCase } from "../../../src/application/voicevox/usecases/synthesize-voice.js";
@@ -52,6 +53,19 @@ const listSleepMethodsUseCase: ListSleepMethodsUseCase = {
   })),
 };
 
+const createSleepRecordUseCase: CreateSleepRecordUseCase = {
+  execute: vi.fn(async (input) => ({
+    sleepRecord: {
+      id: "sleep-record-1",
+      userId: input.userId,
+      sleepMethodId: input.sleepMethodId,
+      sleepDate: input.sleepDate,
+      sleptMinutes: input.sleptMinutes,
+      createdAt: new Date("2026-04-24T00:00:00.000Z"),
+    },
+  })),
+};
+
 const synthesizeVoiceUseCase: SynthesizeVoiceUseCase = {
   execute: vi.fn(async () => ({
     audio: new Uint8Array([1, 2, 3]).buffer,
@@ -66,6 +80,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepRecordModule: {
+        createSleepRecordUseCase,
       },
       sleepMethodModule: {
         listSleepMethodsUseCase,
@@ -92,6 +109,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepRecordModule: {
+        createSleepRecordUseCase,
       },
       sleepMethodModule: {
         listSleepMethodsUseCase,
@@ -144,6 +164,9 @@ describe("app e2e", () => {
         registerUserUseCase,
         loginUserUseCase,
       },
+      sleepRecordModule: {
+        createSleepRecordUseCase,
+      },
       sleepMethodModule: {
         listSleepMethodsUseCase,
       },
@@ -177,6 +200,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepRecordModule: {
+        createSleepRecordUseCase,
       },
       sleepMethodModule: {
         listSleepMethodsUseCase,
