@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-case-error.js";
 import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
 import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
+import type { ListSleepMethodsUseCase } from "../../../src/application/sleep-methods/usecases/list-sleep-methods.js";
 import type { GetVoicevoxSpeakersUseCase } from "../../../src/application/voicevox/usecases/get-speakers.js";
 import type { SynthesizeVoiceUseCase } from "../../../src/application/voicevox/usecases/synthesize-voice.js";
 import { Email } from "../../../src/domain/auth/email.js";
@@ -45,6 +46,12 @@ const getVoicevoxSpeakersUseCase: GetVoicevoxSpeakersUseCase = {
   })),
 };
 
+const listSleepMethodsUseCase: ListSleepMethodsUseCase = {
+  execute: vi.fn(async () => ({
+    sleepMethods: [],
+  })),
+};
+
 const synthesizeVoiceUseCase: SynthesizeVoiceUseCase = {
   execute: vi.fn(async () => ({
     audio: new Uint8Array([1, 2, 3]).buffer,
@@ -59,6 +66,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepMethodModule: {
+        listSleepMethodsUseCase,
       },
       voicevoxModule: {
         getVoicevoxSpeakersUseCase,
@@ -82,6 +92,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepMethodModule: {
+        listSleepMethodsUseCase,
       },
       voicevoxModule: {
         getVoicevoxSpeakersUseCase,
@@ -131,6 +144,9 @@ describe("app e2e", () => {
         registerUserUseCase,
         loginUserUseCase,
       },
+      sleepMethodModule: {
+        listSleepMethodsUseCase,
+      },
       voicevoxModule: {
         getVoicevoxSpeakersUseCase,
         synthesizeVoiceUseCase,
@@ -161,6 +177,9 @@ describe("app e2e", () => {
       authModule: {
         registerUserUseCase,
         loginUserUseCase,
+      },
+      sleepMethodModule: {
+        listSleepMethodsUseCase,
       },
       voicevoxModule: {
         getVoicevoxSpeakersUseCase,
