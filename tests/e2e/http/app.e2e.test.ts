@@ -4,6 +4,7 @@ import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-
 import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
 import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
 import type { CreateSleepRecordUseCase } from "../../../src/application/sleep-records/usecases/create-sleep-record.js";
+import type { ListSleepRecordsUseCase } from "../../../src/application/sleep-records/usecases/list-sleep-records.js";
 import type { ListSleepMethodsUseCase } from "../../../src/application/sleep-methods/usecases/list-sleep-methods.js";
 import type { GetVoicevoxSpeakersUseCase } from "../../../src/application/voicevox/usecases/get-speakers.js";
 import type { SynthesizeVoiceUseCase } from "../../../src/application/voicevox/usecases/synthesize-voice.js";
@@ -66,6 +67,12 @@ const createSleepRecordUseCase: CreateSleepRecordUseCase = {
   })),
 };
 
+const listSleepRecordsUseCase: ListSleepRecordsUseCase = {
+  execute: vi.fn(async () => ({
+    sleepRecords: [],
+  })),
+};
+
 const synthesizeVoiceUseCase: SynthesizeVoiceUseCase = {
   execute: vi.fn(async () => ({
     audio: new Uint8Array([1, 2, 3]).buffer,
@@ -83,6 +90,7 @@ describe("app e2e", () => {
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
+        listSleepRecordsUseCase,
       },
       sleepMethodDependencies: {
         listSleepMethodsUseCase,
@@ -112,6 +120,7 @@ describe("app e2e", () => {
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
+        listSleepRecordsUseCase,
       },
       sleepMethodDependencies: {
         listSleepMethodsUseCase,
@@ -166,6 +175,7 @@ describe("app e2e", () => {
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
+        listSleepRecordsUseCase,
       },
       sleepMethodDependencies: {
         listSleepMethodsUseCase,
@@ -203,6 +213,7 @@ describe("app e2e", () => {
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
+        listSleepRecordsUseCase,
       },
       sleepMethodDependencies: {
         listSleepMethodsUseCase,

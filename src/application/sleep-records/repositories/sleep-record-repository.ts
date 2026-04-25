@@ -16,4 +16,5 @@ export class InvalidSleepRecordReferenceError extends Error {
 
 export interface SleepRecordRepository {
   create(input: CreateSleepRecordInput): Promise<SleepRecord>;
+  findByUserId(userId: string): Promise<SleepRecord[]>;
 }
