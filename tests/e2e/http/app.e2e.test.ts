@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { AuthUseCaseError } from "../../../src/application/auth/errors/auth-use-case-error.js";
+import type { TokenVerifier } from "../../../src/application/auth/services/token-verifier.js";
 import type { LoginUserUseCase } from "../../../src/application/auth/usecases/login-user.js";
 import type { RegisterUserUseCase } from "../../../src/application/auth/usecases/register-user.js";
 import type { CreateSleepRecordUseCase } from "../../../src/application/sleep-records/usecases/create-sleep-record.js";
@@ -40,6 +41,13 @@ const loginUserUseCase: LoginUserUseCase = {
       accessToken: "access-token",
     };
   }),
+};
+
+const tokenVerifier: TokenVerifier = {
+  verifyAccessToken: vi.fn(() => ({
+    userId: "11111111-1111-1111-1111-111111111111",
+    email: "test@example.com",
+  })),
 };
 
 const getVoicevoxSpeakersUseCase: GetVoicevoxSpeakersUseCase = {
@@ -87,6 +95,7 @@ describe("app e2e", () => {
       authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
+        tokenVerifier,
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
@@ -117,6 +126,7 @@ describe("app e2e", () => {
       authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
+        tokenVerifier,
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
@@ -172,6 +182,7 @@ describe("app e2e", () => {
       authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
+        tokenVerifier,
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
@@ -210,6 +221,7 @@ describe("app e2e", () => {
       authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
+        tokenVerifier,
       },
       sleepRecordDependencies: {
         createSleepRecordUseCase,
