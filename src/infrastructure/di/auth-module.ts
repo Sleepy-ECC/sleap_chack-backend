@@ -9,7 +9,12 @@ export type AuthModule = {
   loginUserUseCase: LoginUserUseCase;
 };
 
-export const createAuthModule = (): AuthModule => {
+export type AuthDependencies = {
+  registerUserUseCase: RegisterUserUseCase;
+  loginUserUseCase: LoginUserUseCase;
+};
+
+export const createAuthDependencies = (): AuthDependencies => {
   const userRepository = new DrizzleUserRepository();
   const passwordHasher = new BcryptPasswordHasher();
   const tokenIssuer = new JwtTokenIssuer();

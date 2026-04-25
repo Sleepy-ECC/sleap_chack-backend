@@ -1,5 +1,5 @@
 {
-  "name": "sleap_chack-backend",
+  "name": "hitsujii-sleep-school-backend",
   "version": "1.0.0",
   "description": "Backend API for Hitsujii Sleep School",
   "scripts": {
@@ -19,16 +19,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sleepy-ECC/sleap_chack-backend.git"
+    "url": "git+https://github.com/Sleepy-ECC/hitsujii-sleep-school-backend.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Sleepy-ECC/sleap_chack-backend/issues"
+    "url": "https://github.com/Sleepy-ECC/hitsujii-sleep-school-backend/issues"
   },
-  "homepage": "https://github.com/Sleepy-ECC/sleap_chack-backend#readme",
+  "homepage": "https://github.com/Sleepy-ECC/hitsujii-sleep-school-backend#readme",
   "dependencies": {
     "@hono/node-server": "^1.19.6",
     "bcryptjs": "^3.0.3",
