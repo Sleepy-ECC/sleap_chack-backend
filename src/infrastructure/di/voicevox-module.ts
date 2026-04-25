@@ -2,12 +2,12 @@ import { GetVoicevoxSpeakersInteractor, type GetVoicevoxSpeakersUseCase } from "
 import { SynthesizeVoiceInteractor, type SynthesizeVoiceUseCase } from "../../application/voicevox/usecases/synthesize-voice.js";
 import { HttpVoicevoxClient } from "../voicevox/http-voicevox-client.js";
 
-export type VoicevoxModule = {
+export type VoicevoxDependencies = {
   getVoicevoxSpeakersUseCase: GetVoicevoxSpeakersUseCase;
   synthesizeVoiceUseCase: SynthesizeVoiceUseCase;
 };
 
-export const createVoicevoxModule = (): VoicevoxModule => {
+export const createVoicevoxDependencies = (): VoicevoxDependencies => {
   const voicevoxClient = new HttpVoicevoxClient();
 
   return {

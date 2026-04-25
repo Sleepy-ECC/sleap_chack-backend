@@ -8,18 +8,18 @@ import { createSleepMethodsRouter, type SleepMethodsRouterDependencies } from ".
 import { createVoicevoxRouter, type VoicevoxRouterDependencies } from "./presentation/http/routes/voicevox.js";
 
 export const createApp = (deps: {
-  authModule: AuthRouterDependencies;
-  sleepRecordModule: SleepRecordsRouterDependencies;
-  sleepMethodModule: SleepMethodsRouterDependencies;
-  voicevoxModule: VoicevoxRouterDependencies;
+  authDependencies: AuthRouterDependencies;
+  sleepRecordDependencies: SleepRecordsRouterDependencies;
+  sleepMethodDependencies: SleepMethodsRouterDependencies;
+  voicevoxDependencies: VoicevoxRouterDependencies;
 }) => {
   const app = new Hono();
 
   app.use("*", logger());
-  app.route("/auth", createAuthRouter(deps.authModule));
-  app.route("/sleep-records", createSleepRecordsRouter(deps.sleepRecordModule));
-  app.route("/sleep-methods", createSleepMethodsRouter(deps.sleepMethodModule));
-  app.route("/voicevox", createVoicevoxRouter(deps.voicevoxModule));
+  app.route("/auth", createAuthRouter(deps.authDependencies));
+  app.route("/sleep-records", createSleepRecordsRouter(deps.sleepRecordDependencies));
+  app.route("/sleep-methods", createSleepMethodsRouter(deps.sleepMethodDependencies));
+  app.route("/voicevox", createVoicevoxRouter(deps.voicevoxDependencies));
 
   app.get("/healthz", (c) =>
     c.json({

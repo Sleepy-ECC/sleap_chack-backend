@@ -77,17 +77,17 @@ describe("app e2e", () => {
   it("healthz に応答する", async () => {
     const { createApp } = await import("../../../src/app.js");
     const app = createApp({
-      authModule: {
+      authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
       },
-      sleepRecordModule: {
+      sleepRecordDependencies: {
         createSleepRecordUseCase,
       },
-      sleepMethodModule: {
+      sleepMethodDependencies: {
         listSleepMethodsUseCase,
       },
-      voicevoxModule: {
+      voicevoxDependencies: {
         getVoicevoxSpeakersUseCase,
         synthesizeVoiceUseCase,
       },
@@ -106,17 +106,17 @@ describe("app e2e", () => {
   it("組み立て済み app を通して register と login を処理する", async () => {
     const { createApp } = await import("../../../src/app.js");
     const app = createApp({
-      authModule: {
+      authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
       },
-      sleepRecordModule: {
+      sleepRecordDependencies: {
         createSleepRecordUseCase,
       },
-      sleepMethodModule: {
+      sleepMethodDependencies: {
         listSleepMethodsUseCase,
       },
-      voicevoxModule: {
+      voicevoxDependencies: {
         getVoicevoxSpeakersUseCase,
         synthesizeVoiceUseCase,
       },
@@ -160,17 +160,17 @@ describe("app e2e", () => {
   it("login 失敗時は INVALID_CREDENTIALS を返す", async () => {
     const { createApp } = await import("../../../src/app.js");
     const app = createApp({
-      authModule: {
+      authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
       },
-      sleepRecordModule: {
+      sleepRecordDependencies: {
         createSleepRecordUseCase,
       },
-      sleepMethodModule: {
+      sleepMethodDependencies: {
         listSleepMethodsUseCase,
       },
-      voicevoxModule: {
+      voicevoxDependencies: {
         getVoicevoxSpeakersUseCase,
         synthesizeVoiceUseCase,
       },
@@ -197,17 +197,17 @@ describe("app e2e", () => {
   it("register の入力が不正な場合は INVALID_REQUEST を返す", async () => {
     const { createApp } = await import("../../../src/app.js");
     const app = createApp({
-      authModule: {
+      authDependencies: {
         registerUserUseCase,
         loginUserUseCase,
       },
-      sleepRecordModule: {
+      sleepRecordDependencies: {
         createSleepRecordUseCase,
       },
-      sleepMethodModule: {
+      sleepMethodDependencies: {
         listSleepMethodsUseCase,
       },
-      voicevoxModule: {
+      voicevoxDependencies: {
         getVoicevoxSpeakersUseCase,
         synthesizeVoiceUseCase,
       },
