@@ -1,3 +1,5 @@
+import { and, desc, eq } from "drizzle-orm";
+
 import type { SleepRecord } from "../../application/sleep-records/models/sleep-record.js";
 import { InvalidSleepRecordReferenceError, type CreateSleepRecordInput, type SleepRecordRepository } from "../../application/sleep-records/repositories/sleep-record-repository.js";
 import { db } from "../../db/client.js";
@@ -13,6 +15,14 @@ const sleepRecordSelection = {
 };
 
 export class DrizzleSleepRecordRepository implements SleepRecordRepository {
+  async findByUserId(userId: string): Promise<SleepRecord[]> {
+    return db
+      .select(sleepRecordSelection)
+      .from(sleepRecords)
+      .where(and(eq(sleepRecords.userId, userId)))
+      .orderBy(desc(sleepRecords.sleepDate), desc(sleepRecords.createdAt));
+  }
+
   async create(input: CreateSleepRecordInput): Promise<SleepRecord> {
     try {
       const [sleepRecord] = await db
