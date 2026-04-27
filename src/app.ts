@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { env } from "./config/env.js";
@@ -17,6 +18,15 @@ export const createApp = (deps: {
   const app = new Hono();
 
   app.use("*", logger());
+  app.use(
+    "*",
+    cors({
+      origin: env.CORS_ORIGINS,
+      allowHeaders: ["Authorization", "Content-Type"],
+      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      credentials: true,
+    }),
+  );
   app.route("/auth", createAuthRouter(deps.authDependencies));
   app.route(
     "/sleep-records",
