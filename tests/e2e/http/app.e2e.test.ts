@@ -89,6 +89,44 @@ const synthesizeVoiceUseCase: SynthesizeVoiceUseCase = {
 };
 
 describe("app e2e", () => {
+  it("CORS のプリフライトに応答する", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authDependencies: {
+        registerUserUseCase,
+        loginUserUseCase,
+        tokenVerifier,
+      },
+      sleepRecordDependencies: {
+        createSleepRecordUseCase,
+        listSleepRecordsUseCase,
+      },
+      sleepMethodDependencies: {
+        listSleepMethodsUseCase,
+      },
+      voicevoxDependencies: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
+      },
+    });
+
+    const response = await app.request("/auth/login", {
+      method: "OPTIONS",
+      headers: {
+        origin: "http://localhost:3000",
+        "access-control-request-method": "POST",
+        "access-control-request-headers": "authorization,content-type",
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("access-control-allow-origin")).toBe("http://localhost:3000");
+    expect(response.headers.get("access-control-allow-credentials")).toBe("true");
+    expect(response.headers.get("access-control-allow-methods")).toContain("POST");
+    expect(response.headers.get("access-control-allow-headers")).toContain("Authorization");
+    expect(response.headers.get("access-control-allow-headers")).toContain("Content-Type");
+  });
+
   it("healthz に応答する", async () => {
     const { createApp } = await import("../../../src/app.js");
     const app = createApp({
