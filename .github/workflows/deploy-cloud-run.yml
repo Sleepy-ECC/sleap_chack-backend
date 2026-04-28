@@ -27,6 +27,7 @@ jobs:
       SERVICE_ACCOUNT_EMAIL: ${{ vars.GCP_SERVICE_ACCOUNT_EMAIL }}
       GCS_BUCKET: ${{ vars.GCS_BUCKET }}
       VOICEVOX_API_BASE_URL: ${{ vars.VOICEVOX_API_BASE_URL }}
+      CORS_ORIGINS: ${{ vars.CORS_ORIGINS }}
       CLOUD_SQL_CONNECTION_NAME: ${{ vars.CLOUD_SQL_CONNECTION_NAME }}
       APP_NAME: ${{ vars.APP_NAME }}
       JWT_ISSUER: ${{ vars.JWT_ISSUER }}
@@ -52,6 +53,7 @@ jobs:
           REQUIRED_CLOUD_RUN_SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
           REQUIRED_GCP_SERVICE_ACCOUNT_EMAIL: ${{ vars.GCP_SERVICE_ACCOUNT_EMAIL }}
           REQUIRED_GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          REQUIRED_CORS_ORIGINS: ${{ vars.CORS_ORIGINS }}
           REQUIRED_GCS_BUCKET: ${{ vars.GCS_BUCKET }}
           REQUIRED_VOICEVOX_API_BASE_URL: ${{ vars.VOICEVOX_API_BASE_URL }}
         run: |
@@ -62,6 +64,7 @@ jobs:
           [ -n "${REQUIRED_CLOUD_RUN_SERVICE}" ] || { echo "::error title=Missing GitHub Variable::CLOUD_RUN_SERVICE is not set"; missing=1; }
           [ -n "${REQUIRED_GCP_SERVICE_ACCOUNT_EMAIL}" ] || { echo "::error title=Missing GitHub Variable::GCP_SERVICE_ACCOUNT_EMAIL is not set"; missing=1; }
           [ -n "${REQUIRED_GCP_WORKLOAD_IDENTITY_PROVIDER}" ] || { echo "::error title=Missing GitHub Variable::GCP_WORKLOAD_IDENTITY_PROVIDER is not set"; missing=1; }
+          [ -n "${REQUIRED_CORS_ORIGINS}" ] || { echo "::error title=Missing GitHub Variable::CORS_ORIGINS is not set"; missing=1; }
           [ -n "${REQUIRED_GCS_BUCKET}" ] || { echo "::error title=Missing GitHub Variable::GCS_BUCKET is not set"; missing=1; }
           [ -n "${REQUIRED_VOICEVOX_API_BASE_URL}" ] || { echo "::error title=Missing GitHub Variable::VOICEVOX_API_BASE_URL is not set"; missing=1; }
 
