@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck source=/dev/null
+  source .env
+  set +a
+fi
+
 trim() {
   printf '%s' "$1" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
 }
@@ -12,6 +19,7 @@ required_vars=(
   ARTIFACT_REGISTRY_REPOSITORY
   SERVICE_NAME
   SERVICE_ACCOUNT_EMAIL
+  CORS_ORIGINS
   GCS_BUCKET
   VOICEVOX_API_BASE_URL
 )
@@ -55,6 +63,7 @@ JWT_SECRET_NAME="$(trim "${JWT_SECRET_NAME}")"
 JWT_ISSUER="$(trim "${JWT_ISSUER}")"
 JWT_AUDIENCE="$(trim "${JWT_AUDIENCE}")"
 APP_NAME="$(trim "${APP_NAME}")"
+CORS_ORIGINS="$(trim "${CORS_ORIGINS}")"
 MIN_INSTANCES="$(trim "${MIN_INSTANCES}")"
 MAX_INSTANCES="$(trim "${MAX_INSTANCES}")"
 ALLOW_UNAUTHENTICATED="$(trim "${ALLOW_UNAUTHENTICATED}")"
@@ -81,7 +90,7 @@ deploy_args=(
   --port 8080
   --min-instances "${MIN_INSTANCES}"
   --max-instances "${MAX_INSTANCES}"
-  --set-env-vars "NODE_ENV=production,APP_NAME=${APP_NAME},GOOGLE_CLOUD_PROJECT=${GCP_PROJECT_ID},GCS_BUCKET=${GCS_BUCKET},VOICEVOX_API_BASE_URL=${VOICEVOX_API_BASE_URL},JWT_ISSUER=${JWT_ISSUER},JWT_AUDIENCE=${JWT_AUDIENCE},DATABASE_SSL=${DATABASE_SSL}"
+  --set-env-vars "^@^NODE_ENV=production@APP_NAME=${APP_NAME}@GOOGLE_CLOUD_PROJECT=${GCP_PROJECT_ID}@GCS_BUCKET=${GCS_BUCKET}@VOICEVOX_API_BASE_URL=${VOICEVOX_API_BASE_URL}@JWT_ISSUER=${JWT_ISSUER}@JWT_AUDIENCE=${JWT_AUDIENCE}@DATABASE_SSL=${DATABASE_SSL}@CORS_ORIGINS=${CORS_ORIGINS}"
   --set-secrets "DATABASE_URL=${DATABASE_URL_SECRET_NAME}:latest,JWT_SECRET=${JWT_SECRET_NAME}:latest"
 )
 

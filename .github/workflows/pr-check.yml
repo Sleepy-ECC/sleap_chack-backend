@@ -22,6 +22,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      CORS_ORIGINS: ${{ vars.CORS_ORIGINS }}
 
     steps:
       - name: Checkout
@@ -34,7 +36,9 @@ jobs:
           cache: npm
 
       - name: Validate test env config
-        run: test -n "${{ vars.TEST_ENV_FILE }}" || (echo "TEST_ENV_FILE is not set" >&2 && exit 1)
+        run: |
+          test -n "${{ vars.TEST_ENV_FILE }}" || (echo "TEST_ENV_FILE is not set" >&2 && exit 1)
+          test -n "${CORS_ORIGINS}" || (echo "CORS_ORIGINS is not set" >&2 && exit 1)
 
       - name: Prepare test env file
         run: printf '%s' "${{ vars.TEST_ENV_FILE }}" > .env.test
