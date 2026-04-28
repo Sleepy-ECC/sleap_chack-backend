@@ -11,6 +11,15 @@ import type { GetVoicevoxSpeakersUseCase } from "../../../src/application/voicev
 import type { SynthesizeVoiceUseCase } from "../../../src/application/voicevox/usecases/synthesize-voice.js";
 import { Email } from "../../../src/domain/auth/email.js";
 
+const corsOrigins = new Set(
+  (process.env.CORS_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
+corsOrigins.add("https://sleepy-ecc.github.io");
+process.env.CORS_ORIGINS = [...corsOrigins].join(",");
+
 const registerUserUseCase: RegisterUserUseCase = {
   execute: vi.fn(async (input) => ({
     user: {
@@ -121,6 +130,46 @@ describe("app e2e", () => {
 
     expect(response.status).toBe(204);
     expect(response.headers.get("access-control-allow-origin")).toBe("http://localhost:3000");
+    expect(response.headers.get("access-control-allow-credentials")).toBe("true");
+    expect(response.headers.get("access-control-allow-methods")).toContain("POST");
+    expect(response.headers.get("access-control-allow-headers")).toContain("Authorization");
+    expect(response.headers.get("access-control-allow-headers")).toContain("Content-Type");
+  });
+
+  it("GitHub Pages からの CORS プリフライトに応答する", async () => {
+    const { createApp } = await import("../../../src/app.js");
+    const app = createApp({
+      authDependencies: {
+        registerUserUseCase,
+        loginUserUseCase,
+        tokenVerifier,
+      },
+      sleepRecordDependencies: {
+        createSleepRecordUseCase,
+        listSleepRecordsUseCase,
+      },
+      sleepMethodDependencies: {
+        listSleepMethodsUseCase,
+      },
+      voicevoxDependencies: {
+        getVoicevoxSpeakersUseCase,
+        synthesizeVoiceUseCase,
+      },
+    });
+
+    const response = await app.request("/auth/login", {
+      method: "OPTIONS",
+      headers: {
+        origin: "https://sleepy-ecc.github.io",
+        "access-control-request-method": "POST",
+        "access-control-request-headers": "authorization,content-type",
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("access-control-allow-origin")).toBe(
+      "https://sleepy-ecc.github.io",
+    );
     expect(response.headers.get("access-control-allow-credentials")).toBe("true");
     expect(response.headers.get("access-control-allow-methods")).toContain("POST");
     expect(response.headers.get("access-control-allow-headers")).toContain("Authorization");

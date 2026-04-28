@@ -6,13 +6,14 @@ const envSchema = z.object({
   APP_NAME: z.string().min(1).default("hitsujii-sleep-school-backend"),
   CORS_ORIGINS: z
     .string()
-    .optional()
+    .min(1)
     .transform((value) =>
       value
-        ?.split(",")
+        .split(",")
         .map((origin) => origin.trim())
-        .filter(Boolean) ?? ["http://localhost:3000", "http://localhost:5173"],
-    ),
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.url()).min(1)),
   DATABASE_URL: z.url(),
   DATABASE_SSL: z
     .string()
